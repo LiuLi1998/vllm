@@ -281,9 +281,15 @@ class VideoMediaIO(MediaIO[npt.NDArray]):
                 "image/jpeg",
             )
 
+            frames_data = data.split(",")
             return np.stack(
-                [np.asarray(load_frame(frame_data)) for frame_data in data.split(",")]
-            ), {}
+                [np.asarray(load_frame(frame_data)) for frame_data in frames_data]
+            ), {
+                "total_num_frames": len(frames_data),
+                "frames_indices": list(range(len(frames_data))),
+                "fps": 24,
+                "duration": len(frames_data) // 24,
+            }
 
         return self.load_bytes(base64.b64decode(data))
 
